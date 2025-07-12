@@ -3,6 +3,7 @@ import SkillGraph from "@/components/SkillGraph";
 import DailyQuest from "@/components/DailyQuest";
 import GamificationStats from "@/components/GamificationStats";
 import WeeklyHackathon from "@/components/WeeklyHackathon";
+import LlamaBot from "@/components/LlamaBot";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -139,6 +140,9 @@ const Index = () => {
           </div>
         </div>
       </main>
+      
+      {/* Llama Bot */}
+      <LlamaBot />
     </div>
   );
 };
