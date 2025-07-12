@@ -169,6 +169,39 @@ const LlamaBot = () => {
     setBotMessage(message);
   };
 
+  const handleHackathonHover = (hackathon: any) => {
+    const yourSkills = hackathon.matchingSkills?.join(", ") || "some skills";
+    const missingSkills = hackathon.requiredSkills.filter((skill: string) => 
+      !hackathon.matchingSkills?.includes(skill)
+    ).join(", ") || "none";
+    
+    let message = `🔍 Looking at "${hackathon.title}" - this ${hackathon.difficulty.toLowerCase()} challenge is ${hackathon.matchScore}% compatible with your skills! `;
+    message += `You're strong in ${yourSkills}. `;
+    if (missingSkills !== "none") {
+      message += `You'd benefit from a teammate with ${missingSkills} expertise. `;
+    }
+    message += `${hackathon.prize} prize with ${hackathon.deadline} remaining! Click to see potential partners! 🎯`;
+    
+    setBotMessage(message);
+  };
+
+  const handlePartnerHover = (partner: TeamMember) => {
+    const complementarySkills = partner.skills.filter(skill =>
+      selectedHackathon?.requiredSkills.some(reqSkill =>
+        skill.toLowerCase().includes(reqSkill.toLowerCase()) ||
+        reqSkill.toLowerCase().includes(skill.toLowerCase())
+      )
+    );
+    
+    let message = `👤 Meet ${partner.name}! They have a ${partner.level}% skill rating and specialize in ${partner.skills.join(", ")}. `;
+    if (complementarySkills.length > 0) {
+      message += `Perfect match! They have the ${complementarySkills.join(" and ")} skills this hackathon needs. `;
+    }
+    message += `Click to learn more about this potential teammate! 🤝`;
+    
+    setBotMessage(message);
+  };
+
   return (
     <>
       {/* Floating Bot Button */}
@@ -274,6 +307,7 @@ const LlamaBot = () => {
                       key={index}
                       className="p-3 bg-background rounded-lg border hover:border-primary/40 transition-colors cursor-pointer"
                       onClick={() => handleHackathonClick(hackathon)}
+                      onMouseEnter={() => handleHackathonHover(hackathon)}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-medium text-sm">{hackathon.title}</h4>
@@ -317,6 +351,7 @@ const LlamaBot = () => {
                           key={index}
                           className="p-3 bg-background rounded-lg border hover:border-primary/40 transition-colors cursor-pointer"
                           onClick={() => handlePartnerClick(partner)}
+                          onMouseEnter={() => handlePartnerHover(partner)}
                         >
                           <div className="flex items-center gap-3 mb-2">
                             <span className="text-2xl">{partner.avatar}</span>
