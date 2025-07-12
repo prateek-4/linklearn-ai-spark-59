@@ -90,7 +90,7 @@ const LlamaBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'recommendations' | 'partners'>('recommendations');
   const [selectedHackathon, setSelectedHackathon] = useState<Hackathon | null>(null);
-  const [botMessage, setBotMessage] = useState("Hey there! 👋 I'm your friendly Llama assistant. I've analyzed your skill profile and found some exciting opportunities for you!");
+  const [botMessage, setBotMessage] = useState("Hey there! 👋 I'm Pixie, your friendly AI assistant. I've analyzed your skill profile and found some exciting opportunities for you!");
   const [selectedPartner, setSelectedPartner] = useState<TeamMember | null>(null);
 
   const getRecommendedHackathons = () => {
@@ -174,22 +174,22 @@ const LlamaBot = () => {
       {/* Floating Bot Button */}
       {!isOpen && (
         <div className="fixed bottom-6 right-6 z-50">
-          <Button
-            onClick={() => setIsOpen(true)}
-            className="h-16 w-16 rounded-full bg-gradient-primary shadow-glow hover:shadow-hover transition-all duration-300 border-2 border-primary/20"
-            size="lg"
-          >
-            <div className="relative">
-              <img 
-                src={llamaBotImage} 
-                alt="Llama Bot" 
-                className="h-10 w-10 rounded-full object-cover"
-              />
-              <div className="absolute -top-1 -right-1 h-3 w-3 bg-success rounded-full animate-pulse-glow" />
-            </div>
-          </Button>
+            <Button
+              onClick={() => setIsOpen(true)}
+              className="h-16 w-16 rounded-full bg-gradient-primary shadow-glow hover:shadow-hover transition-all duration-300 border-2 border-primary/20 p-2"
+              size="lg"
+            >
+              <div className="relative">
+                <img 
+                  src={llamaBotImage} 
+                  alt="Pixie Bot" 
+                  className="h-12 w-12 object-contain"
+                />
+                <div className="absolute -top-1 -right-1 h-3 w-3 bg-success rounded-full animate-pulse-glow" />
+              </div>
+            </Button>
           <div className="absolute bottom-full right-0 mb-2 bg-background/95 backdrop-blur-sm border rounded-lg p-2 shadow-card text-xs max-w-32 animate-fade-in">
-            🦙 I can help you find hackathons and teammates!
+            🦙 Hi! I'm Pixie, your AI hackathon helper!
           </div>
         </div>
       )}
@@ -203,10 +203,10 @@ const LlamaBot = () => {
                 <div className="flex items-center gap-2">
                   <img 
                     src={llamaBotImage} 
-                    alt="Llama Bot" 
-                    className="h-8 w-8 rounded-full object-cover"
+                    alt="Pixie" 
+                    className="h-8 w-8 object-contain"
                   />
-                  <CardTitle className="text-lg">Llama Assistant</CardTitle>
+                  <CardTitle className="text-lg">Pixie</CardTitle>
                 </div>
                 <Button
                   variant="ghost"
@@ -223,7 +223,7 @@ const LlamaBot = () => {
                   size="sm"
                   onClick={() => {
                     setActiveTab('recommendations');
-                    setBotMessage("Hey there! 👋 I'm your friendly Llama assistant. I've analyzed your skill profile and found some exciting opportunities for you!");
+                    setBotMessage("Hey there! 👋 I'm Pixie, your friendly AI assistant. I've analyzed your skill profile and found some exciting opportunities for you!");
                   }}
                   className="flex-1"
                 >
