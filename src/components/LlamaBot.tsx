@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { X, MessageCircle, Users, Target, Zap, Brain } from "lucide-react";
-import llamaBotImage from "@/assets/llama-bot.png";
+import llamaBotImage from "/lovable-uploads/52f373c1-2f91-47f4-92ed-6ef6d04475fc.png";
 
 interface Skill {
   name: string;
@@ -90,6 +90,8 @@ const LlamaBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'recommendations' | 'partners'>('recommendations');
   const [selectedHackathon, setSelectedHackathon] = useState<Hackathon | null>(null);
+  const [botMessage, setBotMessage] = useState("Hey there! 👋 I'm your friendly Llama assistant. I've analyzed your skill profile and found some exciting opportunities for you!");
+  const [selectedPartner, setSelectedPartner] = useState<TeamMember | null>(null);
 
   const getRecommendedHackathons = () => {
     return hackathons.map(hackathon => {
@@ -129,6 +131,43 @@ const LlamaBot = () => {
   };
 
   const recommendations = getRecommendedHackathons();
+
+  const handleHackathonClick = (hackathon: any) => {
+    setSelectedHackathon(hackathon);
+    const yourSkills = hackathon.matchingSkills?.join(", ") || "some skills";
+    const missingSkills = hackathon.requiredSkills.filter((skill: string) => 
+      !hackathon.matchingSkills?.includes(skill)
+    ).join(", ") || "none";
+    
+    let message = `🎯 Great choice! This ${hackathon.difficulty.toLowerCase()} hackathon has a ${hackathon.matchScore}% match with your skills. `;
+    message += `You're already strong in: ${yourSkills}. `;
+    if (missingSkills !== "none") {
+      message += `You might want to find teammates who excel in: ${missingSkills}. `;
+    }
+    message += `With ${hackathon.deadline} left and a ${hackathon.prize} prize, this could be perfect for you! 🚀`;
+    
+    setBotMessage(message);
+    setActiveTab('partners');
+  };
+
+  const handlePartnerClick = (partner: TeamMember) => {
+    setSelectedPartner(partner);
+    const complementarySkills = partner.skills.filter(skill =>
+      selectedHackathon?.requiredSkills.some(reqSkill =>
+        skill.toLowerCase().includes(reqSkill.toLowerCase()) ||
+        reqSkill.toLowerCase().includes(skill.toLowerCase())
+      )
+    );
+    
+    let message = `👋 ${partner.name} could be an amazing teammate! `;
+    message += `With a ${partner.level}% skill level, they bring expertise in ${partner.skills.join(", ")}. `;
+    if (complementarySkills.length > 0) {
+      message += `They specifically excel in ${complementarySkills.join(" and ")} which are crucial for this hackathon. `;
+    }
+    message += `Together, you could make a winning team! 💪`;
+    
+    setBotMessage(message);
+  };
 
   return (
     <>
@@ -182,7 +221,10 @@ const LlamaBot = () => {
                 <Button
                   variant={activeTab === 'recommendations' ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setActiveTab('recommendations')}
+                  onClick={() => {
+                    setActiveTab('recommendations');
+                    setBotMessage("Hey there! 👋 I'm your friendly Llama assistant. I've analyzed your skill profile and found some exciting opportunities for you!");
+                  }}
                   className="flex-1"
                 >
                   <Target className="h-3 w-3 mr-1" />
@@ -191,7 +233,14 @@ const LlamaBot = () => {
                 <Button
                   variant={activeTab === 'partners' ? 'default' : 'outline'}
                   size="sm"
-                  onClick={() => setActiveTab('partners')}
+                  onClick={() => {
+                    setActiveTab('partners');
+                    if (selectedHackathon) {
+                      setBotMessage(`Let's find you the perfect teammate for "${selectedHackathon.title}"! Click on any partner to learn more about them. 🤝`);
+                    } else {
+                      setBotMessage("First, select a hackathon from the recommendations tab so I can find you compatible teammates! 🎯");
+                    }
+                  }}
                   className="flex-1"
                 >
                   <Users className="h-3 w-3 mr-1" />
@@ -201,6 +250,20 @@ const LlamaBot = () => {
             </CardHeader>
 
             <CardContent className="max-h-96 overflow-y-auto">
+              {/* Bot Message Area */}
+              <div className="mb-4 p-3 bg-gradient-subtle rounded-lg border border-primary/10">
+                <div className="flex items-start gap-2">
+                  <img 
+                    src={llamaBotImage} 
+                    alt="Llama" 
+                    className="h-6 w-6 rounded-full object-cover mt-0.5"
+                  />
+                  <div className="text-sm text-foreground leading-relaxed">
+                    {botMessage}
+                  </div>
+                </div>
+              </div>
+
               {activeTab === 'recommendations' && (
                 <div className="space-y-3">
                   <div className="text-sm text-muted-foreground mb-3">
@@ -210,10 +273,7 @@ const LlamaBot = () => {
                     <div
                       key={index}
                       className="p-3 bg-background rounded-lg border hover:border-primary/40 transition-colors cursor-pointer"
-                      onClick={() => {
-                        setSelectedHackathon(hackathon);
-                        setActiveTab('partners');
-                      }}
+                      onClick={() => handleHackathonClick(hackathon)}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <h4 className="font-medium text-sm">{hackathon.title}</h4>
@@ -255,7 +315,8 @@ const LlamaBot = () => {
                       {getRecommendedPartners(selectedHackathon).map((partner, index) => (
                         <div
                           key={index}
-                          className="p-3 bg-background rounded-lg border hover:border-primary/40 transition-colors"
+                          className="p-3 bg-background rounded-lg border hover:border-primary/40 transition-colors cursor-pointer"
+                          onClick={() => handlePartnerClick(partner)}
                         >
                           <div className="flex items-center gap-3 mb-2">
                             <span className="text-2xl">{partner.avatar}</span>
